@@ -1,0 +1,13 @@
+{
+  "detail": [
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "body",
+        "high_demand_proxy"
+      ],
+      "msg": "Extra inputs are not permitted",
+      "input": 1
+    }
+  ]
+}

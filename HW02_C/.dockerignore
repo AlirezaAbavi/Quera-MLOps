@@ -1,0 +1,42 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local secrets
+.env
+
+# Git / IDE
+.git/
+.gitignore
+.idea/
+.vscode/
+
+# Notebook / OS clutter
+.ipynb_checkpoints/
+.DS_Store
+
+# Local logs
+*.log
+logs/
+
+# MLflow local folders
+mlruns/
+mlartifacts/
+
+# Local datasets / outputs
+data/
+
+# Do not ship local fallback model if using MLflow download
+artifacts/model_fallback/
+*.joblib
+*.pkl

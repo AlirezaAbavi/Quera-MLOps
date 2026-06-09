@@ -1,0 +1,6 @@
+{
+  "prediction": 0,
+  "prediction_label": "not_high_demand_proxy",
+  "probability": 0.250343,
+  "threshold": 0.5
+}
