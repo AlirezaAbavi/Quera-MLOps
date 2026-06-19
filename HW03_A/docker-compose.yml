@@ -1,0 +1,20 @@
+services:
+  airbnb-serving:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: airbnb-serving:optimized
+    container_name: airbnb-serving-api
+    env_file:
+      - .env
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./mlflow_artifacts:/app/mlflow_artifacts:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s

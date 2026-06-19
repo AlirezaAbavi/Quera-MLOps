@@ -1,0 +1,49 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Git / IDE
+.git/
+.gitignore
+.idea/
+.vscode/
+
+# Notebook / OS files
+.ipynb_checkpoints/
+.DS_Store
+
+# Notebooks are not required inside the serving image
+*.ipynb
+
+# Local secrets
+.env
+
+# Local logs
+*.log
+logs/
+
+# Local MLflow folders
+mlruns/
+mlartifacts/
+
+# Local datasets and large files
+data/
+
+# Local model fallback artifacts
+# The Docker service should load from MLflow unless LOCAL_MODEL_PATH is explicitly mounted.
+mlflow_artifacts/
+artifacts/
+
+# Assignment output folders
+outputs/
+screenshots/
