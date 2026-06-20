@@ -1,0 +1,10 @@
+table,column,pii_type,decision,reason
+listing,listing_id,entity identifier,keep as entity key only,needed to define one row per listing; exclude from model inputs
+listing,host_id,person/account identifier,"use for joins only, drop before final ML table",links a listing to a host identity
+listing,license,regulatory/property identifier,drop,can identify a licensed property or host; not needed for modeling
+host,host_id,person/account identifier,"use for joins only, drop before final ML table",needed only to join host attributes to listings
+host,host_pseudo_id,pseudonymous person/account identifier,drop,identity-linking pseudonymous identifier; not useful as an ML feature
+review,review_id,review row identifier,"aggregate only, do not keep raw",raw review IDs are not useful features and can link back to source rows
+review,reviewer_id,person/account identifier,"aggregate only, do not keep raw",used only for reviewer counts; individual reviewer identities are not kept
+review,reviewer_pseudo_id,pseudonymous person/account identifier,drop,identity-linking pseudonymous identifier; not needed after aggregation
+review,comment_len,safe derived text length,aggregate only,"keeps only numeric review-length statistics, not raw review text"

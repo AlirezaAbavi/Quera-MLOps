@@ -22,15 +22,6 @@ env/
 # Environment secrets
 .env
 
-# Local data and artifacts
-data/
-mlruns/
-mlartifacts/
-artifacts/
-outputs/
-reports/
-screenshots/
-
 # Logs
 *.log
 logs/
