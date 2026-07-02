@@ -1,0 +1,12 @@
+.env
+*.env
+kubeconfig.yaml
+handout/kubeconfig.yaml
+*.key
+*.pem
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# real secret, don't commit
+k8s/04_secret.yaml

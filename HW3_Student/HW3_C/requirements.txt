@@ -1,0 +1,11 @@
+# app deps the base image doesn't already carry (psycopg/qdrant/minio etc).
+# pip skips the ones already in the base. versions match HW3_B.
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+pydantic==2.10.3
+numpy==1.26.4
+python-dotenv==1.0.1
+psycopg[binary]==3.2.3
+qdrant-client==1.12.1
+minio==7.2.12
+requests==2.32.3

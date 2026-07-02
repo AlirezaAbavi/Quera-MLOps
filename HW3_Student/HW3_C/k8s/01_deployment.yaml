@@ -1,0 +1,120 @@
+# embedder deployment - blue track
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: embedder
+  namespace: qbc12-hw03-c-alireza-abouei
+  labels: {app: embedder, version: v1, track: blue}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: embedder, track: blue}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0          # keep at least the old pod up during a rollout
+  template:
+    metadata:
+      labels: {app: embedder, version: v1, track: blue}
+    spec:
+      terminationGracePeriodSeconds: 30
+
+      # pull the bundle from minio into the shared volume.
+      # it's stored as loose files under hw03-bundles/alireza_abouei/, so copy
+      # the prefix recursively (not a tar).
+      initContainers:
+      - name: bundle-pull
+        image: 185.50.38.163:35000/init-bundle:v1
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          set -e
+          mc alias set myminio http://185.50.38.163:33333 "$MINIO_ACCESS_KEY" "$MINIO_SECRET_KEY"
+          mkdir -p /bundle
+          mc cp --recursive myminio/hw03-bundles/alireza_abouei/ /bundle/
+          ls -la /bundle/ /bundle/model/ | head -40
+          test -f /bundle/predict.py
+          test -f /bundle/MANIFEST.json
+          test -f /bundle/model/model.safetensors
+          echo "[bundle-pull] done"
+        env:
+        - {name: MINIO_ACCESS_KEY, valueFrom: {secretKeyRef: {name: app-credentials, key: minio-access-key}}}
+        - {name: MINIO_SECRET_KEY, valueFrom: {secretKeyRef: {name: app-credentials, key: minio-secret-key}}}
+        resources:
+          requests: {cpu: 50m, memory: 64Mi}
+          limits:   {cpu: 200m, memory: 256Mi}
+        volumeMounts:
+        - {name: bundle, mountPath: /bundle}
+
+      containers:
+      - name: api
+        image: 185.50.38.163:35000/qbc12-embedder-alireza-abouei:v1
+        imagePullPolicy: Always
+        ports:
+        - {name: http, containerPort: 8000}
+
+        # startup + liveness on /healthz/live, readiness on /healthz/ready
+        startupProbe:
+          httpGet: {path: /healthz/live, port: http}
+          periodSeconds: 5
+          failureThreshold: 24        # ~120s for init + model load
+        livenessProbe:
+          httpGet: {path: /healthz/live, port: http}
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet: {path: /healthz/ready, port: http}
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+
+        resources:
+          requests: {cpu: 250m, memory: 512Mi}   # cpu request needed for the hpa
+          limits:   {cpu: 500m, memory: 1Gi}
+
+        # non-root + read-only fs. don't use runAsNonRoot (base image USER is a name)
+        securityContext:
+          runAsUser: 10001
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: [ALL]
+
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 10"]
+
+        env:
+        - {name: BUNDLE_DIR,    value: "/bundle"}
+        - {name: MODEL_SOURCE,  value: "local"}
+        - {name: BUNDLE_DEVICE, value: "cpu"}
+        - {name: IMAGE_TAG,     value: "v1"}
+        - {name: QDRANT_URL,        value: "http://185.50.38.163:6333"}
+        - {name: QDRANT_COLLECTION, value: "qbc12_corpus"}
+        - {name: QDRANT_API_KEY,    valueFrom: {secretKeyRef: {name: app-credentials, key: qdrant-api-key}}}
+        - {name: DATABASE_HOST,            value: "185.50.38.163"}
+        - {name: DATABASE_PORT,            value: "32112"}
+        - {name: DATABASE_NAME,            value: "qbc12_hw03_encoder"}
+        - {name: DATABASE_API_RO_PASSWORD, valueFrom: {secretKeyRef: {name: app-credentials, key: db-ro-password}}}
+        - {name: LOG_LEVEL, valueFrom: {configMapKeyRef: {name: app-config, key: log_level}}}
+        - {name: THRESHOLD, valueFrom: {configMapKeyRef: {name: app-config, key: threshold}}}
+        # send hf/cache writes to /tmp so the read-only fs doesn't break model load
+        - {name: HF_HOME,              value: "/tmp"}
+        - {name: TRANSFORMERS_CACHE,   value: "/tmp"}
+        - {name: XDG_CACHE_HOME,       value: "/tmp"}
+        - {name: HF_HUB_OFFLINE,       value: "1"}
+        - {name: TRANSFORMERS_OFFLINE, value: "1"}
+        - {name: OMP_NUM_THREADS,      value: "2"}
+
+        volumeMounts:
+        - {name: bundle, mountPath: /bundle, readOnly: true}
+        - {name: tmp,    mountPath: /tmp}
+
+      volumes:
+      - name: bundle
+        emptyDir: {sizeLimit: 500Mi}
+      - name: tmp
+        emptyDir: {}

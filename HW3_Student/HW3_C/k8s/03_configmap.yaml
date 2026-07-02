@@ -1,0 +1,12 @@
+# runtime config (log_level -> LOG_LEVEL, threshold -> THRESHOLD)
+# rotate threshold:
+#   kubectl patch configmap app-config -p '{"data":{"threshold":"0.7"}}'
+#   kubectl rollout restart deployment embedder
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: qbc12-hw03-c-alireza-abouei
+data:
+  log_level: "INFO"
+  threshold: "0.5"

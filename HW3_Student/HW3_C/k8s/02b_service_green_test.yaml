@@ -1,0 +1,19 @@
+# private service for testing green before the cutover (clusterip).
+#   kubectl port-forward svc/embedder-green-test 8081:80
+#   curl localhost:8081/version
+apiVersion: v1
+kind: Service
+metadata:
+  name: embedder-green-test
+  namespace: qbc12-hw03-c-alireza-abouei
+  labels: {app: embedder, track: green}
+spec:
+  type: ClusterIP
+  selector:
+    app: embedder
+    track: green
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+    protocol: TCP

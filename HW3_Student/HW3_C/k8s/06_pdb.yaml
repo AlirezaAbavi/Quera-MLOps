@@ -1,0 +1,12 @@
+# keep 2 pods up during a drain. scale embedder to 3 first, then a dry-run drain
+# gets rejected with "would violate disruption budget".
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: embedder-pdb
+  namespace: qbc12-hw03-c-alireza-abouei
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: embedder

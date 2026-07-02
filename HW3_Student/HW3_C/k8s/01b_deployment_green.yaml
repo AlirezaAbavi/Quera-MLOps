@@ -1,0 +1,106 @@
+# embedder deployment - green track (blue/green)
+# same as blue but track=green, v3 image, IMAGE_TAG=v3. starts at 0 replicas,
+# scale to 1 only while testing the cutover:
+#   kubectl scale deployment embedder-green --replicas=1
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: embedder-green
+  namespace: qbc12-hw03-c-alireza-abouei
+  labels: {app: embedder, version: v3, track: green}
+spec:
+  replicas: 0
+  selector:
+    matchLabels: {app: embedder, track: green}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels: {app: embedder, version: v3, track: green}
+    spec:
+      terminationGracePeriodSeconds: 30
+      initContainers:
+      - name: bundle-pull
+        image: 185.50.38.163:35000/init-bundle:v1
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          set -e
+          mc alias set myminio http://185.50.38.163:33333 "$MINIO_ACCESS_KEY" "$MINIO_SECRET_KEY"
+          mkdir -p /bundle
+          mc cp --recursive myminio/hw03-bundles/alireza_abouei/ /bundle/
+          test -f /bundle/predict.py && test -f /bundle/model/model.safetensors
+          echo "[bundle-pull] done"
+        env:
+        - {name: MINIO_ACCESS_KEY, valueFrom: {secretKeyRef: {name: app-credentials, key: minio-access-key}}}
+        - {name: MINIO_SECRET_KEY, valueFrom: {secretKeyRef: {name: app-credentials, key: minio-secret-key}}}
+        resources:
+          requests: {cpu: 50m, memory: 64Mi}
+          limits:   {cpu: 200m, memory: 256Mi}
+        volumeMounts:
+        - {name: bundle, mountPath: /bundle}
+
+      containers:
+      - name: api
+        image: 185.50.38.163:35000/qbc12-embedder-alireza-abouei:v3
+        imagePullPolicy: Always
+        ports:
+        - {name: http, containerPort: 8000}
+        startupProbe:
+          httpGet: {path: /healthz/live, port: http}
+          periodSeconds: 5
+          failureThreshold: 24
+        livenessProbe:
+          httpGet: {path: /healthz/live, port: http}
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet: {path: /healthz/ready, port: http}
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+        resources:
+          requests: {cpu: 250m, memory: 512Mi}
+          limits:   {cpu: 500m, memory: 1Gi}
+        securityContext:
+          runAsUser: 10001
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: [ALL]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 10"]
+        env:
+        - {name: BUNDLE_DIR,    value: "/bundle"}
+        - {name: MODEL_SOURCE,  value: "local"}
+        - {name: BUNDLE_DEVICE, value: "cpu"}
+        - {name: IMAGE_TAG,     value: "v3"}
+        - {name: QDRANT_URL,        value: "http://185.50.38.163:6333"}
+        - {name: QDRANT_COLLECTION, value: "qbc12_corpus"}
+        - {name: QDRANT_API_KEY,    valueFrom: {secretKeyRef: {name: app-credentials, key: qdrant-api-key}}}
+        - {name: DATABASE_HOST,            value: "185.50.38.163"}
+        - {name: DATABASE_PORT,            value: "32112"}
+        - {name: DATABASE_NAME,            value: "qbc12_hw03_encoder"}
+        - {name: DATABASE_API_RO_PASSWORD, valueFrom: {secretKeyRef: {name: app-credentials, key: db-ro-password}}}
+        - {name: LOG_LEVEL, valueFrom: {configMapKeyRef: {name: app-config, key: log_level}}}
+        - {name: THRESHOLD, valueFrom: {configMapKeyRef: {name: app-config, key: threshold}}}
+        - {name: HF_HOME,              value: "/tmp"}
+        - {name: TRANSFORMERS_CACHE,   value: "/tmp"}
+        - {name: XDG_CACHE_HOME,       value: "/tmp"}
+        - {name: HF_HUB_OFFLINE,       value: "1"}
+        - {name: TRANSFORMERS_OFFLINE, value: "1"}
+        - {name: OMP_NUM_THREADS,      value: "2"}
+        volumeMounts:
+        - {name: bundle, mountPath: /bundle, readOnly: true}
+        - {name: tmp,    mountPath: /tmp}
+      volumes:
+      - name: bundle
+        emptyDir: {sizeLimit: 500Mi}
+      - name: tmp
+        emptyDir: {}
