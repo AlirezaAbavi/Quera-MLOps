@@ -1,0 +1,20 @@
+{
+  "format_version": 1,
+  "schema_version": "1.0",
+  "bundle_version": "1.0.0",
+  "files": {
+    "metadata.json": "c0f2f97c6440584ccee688acf82c2ff720ba40ef13fc79d1a8f94c442484131e",
+    "model/.commit": "9d73db3316b1ee7a5b46683908230341a0e9c5bf26d88af2f26aec590b10fb57",
+    "model/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/config.json": "953f9c0d463486b10a6871cc2fd59f223b2c70184f49815e7efbcab5d8908b41",
+    "model/model.safetensors": "53aa51172d142c89d9012cce15ae4d6cc0ca6895895114379cacb4fab128d9db",
+    "model/special_tokens_map.json": "303df45a03609e4ead04bc3dc1536d0ab19b5358db685b6f3da123d05ec200e3",
+    "model/tokenizer.json": "be50c3628f2bf5bb5e3a7f17b1f74611b2561a3a27eeab05e5aa30f411572037",
+    "model/tokenizer_config.json": "acb92769e8195aabd29b7b2137a9e6d6e25c476a4f15aa4355c233426c61576b",
+    "model/vocab.txt": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3",
+    "predict.py": "7b012b5882a13dfcf3f707dd7ad6a22f50171051a0a95acdd91e8f43a4247ffa",
+    "requirements.txt": "8a3c572e477ee63ba2096e91cce7991deddbf592e2ea12d45ba908e5a4deb668"
+  },
+  "generated_at_utc": "2026-07-02T13:58:30Z",
+  "generator": "scripts/gen_manifest.py"
+}
