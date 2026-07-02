@@ -1,0 +1,27 @@
+TOKENIZERS_PARALLELISM=false OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 \
+	PYTHONPATH=. python -m pytest tests/ -v
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.3, pluggy-1.6.0 -- /home/alireza/PycharmProjects/Quera-Homeworks/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/alireza/PycharmProjects/Quera-Homeworks/HW3_Student/HW3_B
+plugins: anyio-4.13.0, hydra-core-1.3.2
+collecting ... collected 15 items
+
+tests/test_embed.py::test_embed_basic PASSED                             [  6%]
+tests/test_embed.py::test_embed_l2_normalized PASSED                     [ 13%]
+tests/test_embed.py::test_embed_rejects_empty PASSED                     [ 20%]
+tests/test_embed.py::test_embed_rejects_extra_field PASSED               [ 26%]
+tests/test_embed.py::test_embed_rejects_oversize_batch PASSED            [ 33%]
+tests/test_embed.py::test_predict_returns_label SKIPPED (bundle not ...) [ 40%]
+tests/test_health.py::test_root PASSED                                   [ 46%]
+tests/test_health.py::test_health_payload_shape PASSED                   [ 53%]
+tests/test_health.py::test_model_info_requires_bundle PASSED             [ 60%]
+tests/test_reindex.py::test_reindex_dry_run_help PASSED                  [ 66%]
+tests/test_search.py::test_search_basic SKIPPED (bundle not loaded)      [ 73%]
+tests/test_search.py::test_search_excludes_neutral_by_default SKIPPED    [ 80%]
+tests/test_search.py::test_search_with_primary_filter SKIPPED (backe...) [ 86%]
+tests/test_search.py::test_search_top_k_bounds PASSED                    [ 93%]
+tests/test_search.py::test_search_rejects_unknown_field PASSED           [100%]
+
+======================== 11 passed, 4 skipped in 12.12s ========================
+WARNING:root:Unable to close http connection. Connection was interrupted on the server side

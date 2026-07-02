@@ -1,0 +1,251 @@
+bash scripts/01_build_image.sh
+Building qbc12-hw03-b-encoder:dev…
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 3.29kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1.7
+#2 DONE 0.6s
+
+#3 docker-image://docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+#3 resolve docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e 0.1s done
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/python:3.11-slim
+#4 DONE 0.7s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 2B 0.0s done
+#5 DONE 0.0s
+
+#6 [builder 1/4] FROM docker.io/library/python:3.11-slim@sha256:cdbd05fb6f457ca275ff51ce00d93d865ca0b6a25f5ffb08262d94f6835771e5
+#6 resolve docker.io/library/python:3.11-slim@sha256:cdbd05fb6f457ca275ff51ce00d93d865ca0b6a25f5ffb08262d94f6835771e5 0.1s done
+#6 DONE 0.1s
+
+#7 [internal] load build context
+#7 transferring context: 91.61MB 1.2s done
+#7 DONE 1.2s
+
+#8 [runtime  9/10] COPY bundle/ /app/bundle/
+#8 CACHED
+
+#9 [builder 4/4] RUN pip install --prefix=/install         torch==2.5.1         --index-url https://download.pytorch.org/whl/cpu &&     pip install --prefix=/install -r /build/requirements.txt
+#9 CACHED
+
+#10 [runtime  3/10] WORKDIR /app
+#10 CACHED
+
+#11 [builder 2/4] WORKDIR /build
+#11 CACHED
+
+#12 [runtime  4/10] COPY --from=builder /install /usr/local
+#12 CACHED
+
+#13 [runtime  7/10] COPY app/ /app/app/
+#13 CACHED
+
+#14 [runtime  8/10] RUN chmod +x /app/app/entrypoint.sh &&     chown -R qbc12:qbc12 /app
+#14 CACHED
+
+#15 [runtime  6/10] RUN pip install --no-cache-dir -r /tmp/bundle-requirements.txt && rm /tmp/bundle-requirements.txt
+#15 CACHED
+
+#16 [runtime  2/10] RUN groupadd --gid 1001 qbc12 &&     useradd  --uid 1001 --gid qbc12 --shell /bin/bash --create-home qbc12
+#16 CACHED
+
+#17 [builder 3/4] COPY requirements.txt /build/requirements.txt
+#17 CACHED
+
+#18 [runtime  5/10] COPY bundle/requirements.txt /tmp/bundle-requirements.txt
+#18 CACHED
+
+#19 [runtime 10/10] RUN chown -R qbc12:qbc12 /app/bundle
+#19 CACHED
+
+#20 exporting to image
+#20 exporting layers done
+#20 exporting manifest sha256:a94532a7ef55ce6baaac2c0fa085808a44509bda74dd77c279c95e742c2c1c7c done
+#20 exporting config sha256:49aef0fee2c426fd92df725d98b4648ba4a96536491d797297225b422bbf219f done
+#20 exporting attestation manifest sha256:6b6fe5aed7f8feb0b58cbb899978448cdd7cdcb3e3c08c345dbf35c0b95e2022
+#20 exporting attestation manifest sha256:6b6fe5aed7f8feb0b58cbb899978448cdd7cdcb3e3c08c345dbf35c0b95e2022 0.1s done
+#20 exporting manifest list sha256:fb427e881b7bdadd8eb9e230c344d408c43c8059ddba76664fe1fc1f79ffd297 0.1s done
+#20 naming to docker.io/library/qbc12-hw03-b-encoder:dev
+#20 naming to docker.io/library/qbc12-hw03-b-encoder:dev done
+#20 unpacking to docker.io/library/qbc12-hw03-b-encoder:dev 0.0s done
+#20 DONE 0.4s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/yqanaa0ujbtb4mfypmrz6mwk1
+
+Built: qbc12-hw03-b-encoder:dev
+Run:   bash scripts/02_run_local.sh
+bash scripts/02_run_local.sh
+Starting Qdrant + Postgres + API…
+ Container qbc12-hw03-postgres-local Running 
+ Container qbc12-hw03-qdrant-local Running 
+ Container qbc12-hw03-b-api-local Running 
+
+Waiting for API to become healthy (max 60s)…
+API is healthy.
+
+API logs (last 20 lines):
+qbc12-hw03-b-api-local  | [entrypoint] OMP_NUM_THREADS=2
+qbc12-hw03-b-api-local  | [entrypoint] MKL_NUM_THREADS=2
+qbc12-hw03-b-api-local  | [entrypoint] TOKENIZERS_PARALLELISM=false
+qbc12-hw03-b-api-local  | INFO:     Started server process [1]
+qbc12-hw03-b-api-local  | INFO:     Waiting for application startup.
+qbc12-hw03-b-api-local  | INFO:hw3_b:HW3_B starting. BUNDLE_DIR=/app/bundle
+qbc12-hw03-b-api-local  | Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 3373.63it/s]
+qbc12-hw03-b-api-local  | INFO:hw3_b:Bundle loaded: /app/bundle
+qbc12-hw03-b-api-local  | INFO:     Application startup complete.
+qbc12-hw03-b-api-local  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+qbc12-hw03-b-api-local  | /usr/local/lib/python3.11/site-packages/qdrant_client/qdrant_remote.py:130: UserWarning: Api key is used with an insecure connection.
+qbc12-hw03-b-api-local  |   warnings.warn("Api key is used with an insecure connection.")
+qbc12-hw03-b-api-local  | INFO:httpx:HTTP Request: GET http://185.50.38.163:6333/collections "HTTP/1.1 200 OK"
+qbc12-hw03-b-api-local  | INFO:     127.0.0.1:43548 - "GET /health HTTP/1.1" 200 OK
+qbc12-hw03-b-api-local  | INFO:httpx:HTTP Request: GET http://185.50.38.163:6333/collections "HTTP/1.1 200 OK"
+qbc12-hw03-b-api-local  | INFO:     127.0.0.1:52962 - "GET /health HTTP/1.1" 200 OK
+qbc12-hw03-b-api-local  | INFO:httpx:HTTP Request: GET http://185.50.38.163:6333/collections "HTTP/1.1 200 OK"
+qbc12-hw03-b-api-local  | INFO:     127.0.0.1:54692 - "GET /health HTTP/1.1" 200 OK
+qbc12-hw03-b-api-local  | INFO:httpx:HTTP Request: GET http://185.50.38.163:6333/collections "HTTP/1.1 200 OK"
+qbc12-hw03-b-api-local  | INFO:     127.0.0.1:53930 - "GET /health HTTP/1.1" 200 OK
+bash scripts/04_smoke_test.sh
+Using API_URL=http://127.0.0.1:8001
+
+=== / ===
+{
+    "message": "QBC12 HW3 Encoder API",
+    "docs": "/docs",
+    "health": "/health",
+    "version": "0.1.0"
+}
+
+=== /health ===
+{
+    "status": "ok",
+    "bundle_loaded": true,
+    "bundle_dir": "/app/bundle",
+    "qdrant_reachable": true,
+    "pg_reachable": true,
+    "error": null
+}
+
+=== /model-info ===
+{
+    "bundle_version": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+    "model_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "device": "cpu",
+    "max_seq_len": 256,
+    "embedding_dim": 384,
+    "bundle_dir": "/app/bundle",
+    "qdrant_collection": "qbc12_corpus",
+    "qdrant_vector_count": 30451
+}
+
+=== /embed ===
+{
+  "count": 3,
+  "dim": 384,
+  "embedding_rows": 3,
+  "first_embedding_len": 384
+}
+
+=== /search ===
+{
+    "query": "I am very happy today",
+    "count": 5,
+    "top_k": 5,
+    "took_ms": 523.0569829999467,
+    "hits": [
+        {
+            "id": "bf48d789-187b-4075-83b8-b4e2acd9af42",
+            "score": 0.66784257,
+            "text": "I'm happy for you and myself.",
+            "primary": "joy",
+            "labels": [
+                "joy"
+            ],
+            "lang": "en",
+            "source": "goemotions"
+        },
+        {
+            "id": "b4902da8-3133-4787-814e-bffc7b4518f6",
+            "score": 0.64771724,
+            "text": "I am happy for you. No, seriously, I am.",
+            "primary": "admiration",
+            "labels": [
+                "admiration",
+                "caring",
+                "love"
+            ],
+            "lang": "en",
+            "source": "goemotions"
+        },
+        {
+            "id": "0d339aac-45b8-4cde-a3a1-667f6204dd1c",
+            "score": 0.63860106,
+            "text": "You look so happy now \ud83d\ude0d Hope you are doing well and that you get everything good you deserve. \u2764\ufe0f",
+            "primary": "approval",
+            "labels": [
+                "approval",
+                "joy",
+                "optimism"
+            ],
+            "lang": "en",
+            "source": "goemotions"
+        },
+        {
+            "id": "431f1d8a-b742-4586-a268-1298c062f54b",
+            "score": 0.6318443,
+            "text": "Glad your happy but also what",
+            "primary": "gratitude",
+            "labels": [
+                "gratitude"
+            ],
+            "lang": "en",
+            "source": "goemotions"
+        },
+        {
+            "id": "9557a0e2-d26f-41f8-9edd-9d2361e967f4",
+            "score": 0.6234533,
+            "text": "I'm so happy for you !",
+            "primary": "joy",
+            "labels": [
+                "joy"
+            ],
+            "lang": "en",
+            "source": "goemotions"
+        }
+    ]
+}
+
+Smoke test completed.
+TOKENIZERS_PARALLELISM=false OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 \
+	PYTHONPATH=. python -m pytest tests/ -v
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.3, pluggy-1.6.0 -- /home/alireza/PycharmProjects/Quera-Homeworks/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/alireza/PycharmProjects/Quera-Homeworks/HW3_Student/HW3_B
+plugins: anyio-4.13.0, hydra-core-1.3.2
+collecting ... collected 15 items
+
+tests/test_embed.py::test_embed_basic PASSED                             [  6%]
+tests/test_embed.py::test_embed_l2_normalized PASSED                     [ 13%]
+tests/test_embed.py::test_embed_rejects_empty PASSED                     [ 20%]
+tests/test_embed.py::test_embed_rejects_extra_field PASSED               [ 26%]
+tests/test_embed.py::test_embed_rejects_oversize_batch PASSED            [ 33%]
+tests/test_embed.py::test_predict_returns_label SKIPPED (bundle not ...) [ 40%]
+tests/test_health.py::test_root PASSED                                   [ 46%]
+tests/test_health.py::test_health_payload_shape PASSED                   [ 53%]
+tests/test_health.py::test_model_info_requires_bundle PASSED             [ 60%]
+tests/test_reindex.py::test_reindex_dry_run_help PASSED                  [ 66%]
+tests/test_search.py::test_search_basic SKIPPED (bundle not loaded)      [ 73%]
+tests/test_search.py::test_search_excludes_neutral_by_default SKIPPED    [ 80%]
+tests/test_search.py::test_search_with_primary_filter SKIPPED (backe...) [ 86%]
+tests/test_search.py::test_search_top_k_bounds PASSED                    [ 93%]
+tests/test_search.py::test_search_rejects_unknown_field PASSED           [100%]
+
+======================== 11 passed, 4 skipped in 16.14s ========================
+WARNING:root:Unable to close http connection. Connection was interrupted on the server side

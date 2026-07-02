@@ -1,0 +1,31 @@
+=== docker compose ps ===
+NAME                        IMAGE                         COMMAND                  SERVICE    CREATED         STATUS                   PORTS
+qbc12-hw03-b-api-local      qbc12-hw03-b-encoder:latest   "/app/app/entrypoint…"   api        2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:8001->8000/tcp, [::]:8001->8000/tcp
+qbc12-hw03-postgres-local   postgres:15-alpine            "docker-entrypoint.s…"   postgres   2 minutes ago   Up 2 minutes             0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp
+qbc12-hw03-qdrant-local     qdrant/qdrant:v1.12.0         "./entrypoint.sh"        qdrant     2 minutes ago   Up 2 minutes             0.0.0.0:6333-6334->6333-6334/tcp, [::]:6333-6334->6333-6334/tcp
+
+=== image size ===
+IMAGE                         ID             DISK USAGE   CONTENT SIZE   EXTRA
+qbc12-hw03-b-encoder:latest   358f7122ab62       2.05GB          526MB   U    
+
+=== API logs last 20 lines ===
+qbc12-hw03-b-api-local  | [entrypoint] BUNDLE_DIR=/app/bundle
+qbc12-hw03-b-api-local  | [entrypoint] BUNDLE_DEVICE=cpu
+qbc12-hw03-b-api-local  | [entrypoint] OMP_NUM_THREADS=2
+qbc12-hw03-b-api-local  | [entrypoint] MKL_NUM_THREADS=2
+qbc12-hw03-b-api-local  | [entrypoint] TOKENIZERS_PARALLELISM=false
+qbc12-hw03-b-api-local  | INFO:     Started server process [1]
+qbc12-hw03-b-api-local  | INFO:     Waiting for application startup.
+qbc12-hw03-b-api-local  | INFO:hw3_b:HW3_B starting. BUNDLE_DIR=/app/bundle
+qbc12-hw03-b-api-local  | Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 3373.63it/s]
+qbc12-hw03-b-api-local  | INFO:hw3_b:Bundle loaded: /app/bundle
+qbc12-hw03-b-api-local  | INFO:     Application startup complete.
+qbc12-hw03-b-api-local  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+qbc12-hw03-b-api-local  | /usr/local/lib/python3.11/site-packages/qdrant_client/qdrant_remote.py:130: UserWarning: Api key is used with an insecure connection.
+qbc12-hw03-b-api-local  |   warnings.warn("Api key is used with an insecure connection.")
+qbc12-hw03-b-api-local  | INFO:httpx:HTTP Request: GET http://185.50.38.163:6333/collections "HTTP/1.1 200 OK"
+qbc12-hw03-b-api-local  | INFO:     127.0.0.1:43548 - "GET /health HTTP/1.1" 200 OK
+qbc12-hw03-b-api-local  | INFO:httpx:HTTP Request: GET http://185.50.38.163:6333/collections "HTTP/1.1 200 OK"
+qbc12-hw03-b-api-local  | INFO:     127.0.0.1:52962 - "GET /health HTTP/1.1" 200 OK
+qbc12-hw03-b-api-local  | INFO:httpx:HTTP Request: GET http://185.50.38.163:6333/collections "HTTP/1.1 200 OK"
+qbc12-hw03-b-api-local  | INFO:     127.0.0.1:54692 - "GET /health HTTP/1.1" 200 OK

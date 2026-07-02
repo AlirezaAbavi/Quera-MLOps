@@ -1,0 +1,47 @@
+bash scripts/04_smoke_test.sh
+Using API_URL=http://127.0.0.1:8001
+
+=== / ===
+{
+    "message": "QBC12 HW3 Encoder API",
+    "docs": "/docs",
+    "health": "/health",
+    "version": "0.1.0"
+}
+
+=== /health ===
+{
+    "status": "ok",
+    "bundle_loaded": true,
+    "bundle_dir": "/app/bundle",
+    "qdrant_reachable": true,
+    "pg_reachable": true,
+    "error": null
+}
+
+=== /model-info ===
+{
+    "bundle_version": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+    "model_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "device": "cpu",
+    "max_seq_len": 256,
+    "embedding_dim": 384,
+    "bundle_dir": "/app/bundle",
+    "qdrant_collection": "qbc12_corpus",
+    "qdrant_vector_count": null
+}
+
+=== /embed ===
+{
+  "count": 3,
+  "dim": 384,
+  "embedding_rows": 3,
+  "first_embedding_len": 384
+}
+
+=== /search ===
+Search request failed or backend has no indexed data yet.
+curl: (22) The requested URL returned error: 503
+
+Smoke test completed.
